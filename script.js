@@ -1,11 +1,32 @@
-let students = [
-	{id: 1, name:'Андрей', surname:'Артамонов'},
-	{id: 2, name:'Дарья', surname:'Архипова'},
-	{id: 3, name:'Николай', surname:'Баркалов'},
-	{id: 4, name:'Георгий', surname:'Бочкарев'},
-	{id: 5, name:'Матвей', surname:'Гаврилов'}
-]
+let students = []
+let id_current = 0
 
+//загружаем инфу с сайта
+function load_from_site() 
+{
+	//1.Создаём новый XMLHttpRequest-объект
+	let xhr = new XMLHttpRequest();
+	//2.Настраиваем его: GET-запрос по URL http://217.71.129.139:4035/students.php
+	xhr.open('GET','http://217.71.129.139:4035/students.php');
+	//3.Отсылаем запрос
+	xhr.send();
+	//4.Этот код сработает после того, как мы получим ответ сервера
+	xhr.onload = function() 
+	{
+		if (xhr.status != 200) 
+		{ //анализируем HTTP-статус ответа, если статус не 200, то произошла ошибка
+			alert('Ошибка $(xhr.status): ${xhr.statusText}');//Например, 404: Not Found
+		}
+		else 
+		{//если всё прошло гладко, выводим результат
+			students = JSON.parse(xhr.responseText)['response']
+		}
+		xhr.onerror = function() 
+		{
+			alert('Запрос не удался');
+		}
+	}
+}
 function load_all() {
 	let table = document.getElementById('tbl_all')
 	for (let i = 0; i < students.lenght; i++) {
@@ -33,7 +54,10 @@ function load_all() {
 		table.appendChild(tr)
 	}
 }
-let id_current = 0
+let sred = 0
+for (let i = 0; i < scores.length; i++) {
+	sred[id] = sred[id] + students[id].scores[i] 
+}
 
 function load_student(id) {
 	let head = document.getElementById('zagolovok')
@@ -41,6 +65,7 @@ function load_student(id) {
 	
 	document.getElementById('name').textContent = students[id].name
 	document.getElementById('surname').textContent = students[id].surname
+	document.getElementById('scores').textContent = sred[id] 
 }
 
 function next() {
